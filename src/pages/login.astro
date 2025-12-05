@@ -1,12 +1,9 @@
 ---
-import LoginForm from "../components/LoginForm.jsx";
-import { ToastProvider } from "../lib/toast.jsx";
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LoginPage from "../components/Auth/Login/LoginPage.jsx";
 ---
-
-<html>
-  <body>
-    <ToastProvider client:load>
-      <LoginForm client:load />
-    </ToastProvider>
-  </body>
-</html>
+<BaseLayout>
+  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <LoginPage client:load />
+  </div>
+</BaseLayout>

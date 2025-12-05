@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useToast } from '../ToastProvider.jsx';
-import { api } from '../../lib/api.js';
+import { useToast } from '../../libs/ToastProvider.jsx';
+import { api } from '../../../lib/api.js';
 
 export default function RegisterForm() {
   const { addToast } = useToast();

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { api } from '../lib/api';
-import { useToast } from '../lib/toast.jsx';
+import { useToast } from '../../libs/ToastProvider.jsx';
+import { api } from '../../../lib/api.js';
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,12 +14,13 @@ export default function LoginForm() {
 
     try {
       // contoh API Elysia
-      const res = await api.login({ email, password });
+      const data = await api.login({ email, password });
+      if (!data.success) {
+        throw new Error(data.message || 'Login gagal');
+      }
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Login gagal');
-
-      alert('Login sukses!');
+      // jika sukses
+      localStorage.setItem('auth_token', data.token);
       addToast('Login sukses!', { type: 'success' });
     } catch (err) {
       setError(err.message);
