@@ -1,0 +1,10 @@
+---
+import RegisterPage from "../components/Register/RegisterPage.jsx";
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <RegisterPage client:load />
+  </div>
+</BaseLayout>

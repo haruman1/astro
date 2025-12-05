@@ -1,0 +1,12 @@
+---
+import LoginForm from "../components/LoginForm.jsx";
+import { ToastProvider } from "../lib/toast.jsx";
+---
+
+<html>
+  <body>
+    <ToastProvider client:load>
+      <LoginForm client:load />
+    </ToastProvider>
+  </body>
+</html>
