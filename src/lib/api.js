@@ -25,3 +25,7 @@ export const api = {
     }).then((r) => r.json());
   },
 };
+export function logout() {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+}

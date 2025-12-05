@@ -20,7 +20,7 @@ export default function LoginForm() {
       }
 
       // jika sukses
-      localStorage.setItem('auth_token', data.token);
+      localStorage.setItem('access_token', data.token);
       addToast('Login sukses!', { type: 'success' });
     } catch (err) {
       setError(err.message);
