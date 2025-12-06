@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useToast } from '../../libs/ToastProvider.jsx';
+import { useToast } from '../../../lib/ToastProvider.jsx';
 import { api } from '../../../lib/api.js';
 
 export default function RegisterForm() {

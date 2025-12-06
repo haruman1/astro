@@ -1,5 +1,5 @@
 import RegisterForm from './RegisterForm.jsx';
-import { ToastProvider } from '../../libs/ToastProvider.jsx';
+import { ToastProvider } from '../../../lib/ToastProvider.jsx';
 
 export default function RegisterPage() {
   return (
