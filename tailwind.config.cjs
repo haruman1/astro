@@ -1,5 +1,9 @@
 module.exports = {
-  content: ['./src/**/*.{astro,jsx,js,tsx}'],
+  content: [
+    './src/**/*.{astro,html,js,jsx,ts,tsx,vue,svelte}',
+    'node_modules/preline/dist/*.js',
+  ],
+
   theme: {
     extend: {
       keyframes: {
@@ -13,4 +17,5 @@ module.exports = {
       },
     },
   },
+  plugins: [require('preline/plugin')],
 };

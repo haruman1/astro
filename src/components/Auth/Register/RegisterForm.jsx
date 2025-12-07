@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useToast } from '../../../lib/ToastProvider.jsx';
-import { api } from '../../../lib/api.js';
+
+import useAuth from '../../hooks/useAuth.js';
 
 export default function RegisterForm() {
   const { addToast } = useToast();
-
+  const { register } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -15,107 +16,117 @@ export default function RegisterForm() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    console.log('hit register');
+
     try {
-      // API Elysia — hasilnya sudah JSON
-      const data = await api.register({ name, email, password });
-      if (data.success === true)
-        addToast(
-          'Registrasi sukses!, Silahkan Login',
-          { type: 'success' },
-          3000
-        );
+      await register(name, email, password);
+      window.location.href = '/login';
+      addToast('Registration successful!', { type: 'success' }, 5000);
     } catch (err) {
       setError(err.message);
       addToast(`Error: ${err.message}`, { type: 'error' });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 p-4">
-      <div className="backdrop-blur-xl bg-white/10 shadow-2xl p-8 w-full max-w-md rounded-2xl border border-white/20">
-        <h2 className="text-3xl font-bold text-white text-center mb-6">
-          Create Account
-        </h2>
+    <div className="min-h-screen w-full flex items-center justify-center px-4">
+      <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-lg w-full max-w-5xl">
+        {/* LEFT SIDE */}
+        <div className="md:w-1/2 bg-gray-50 p-8 flex flex-col items-center justify-center text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#21BAA7]">
+            Welcome To Manajemen Barang
+          </h1>
 
-        {error && (
-          <p className="bg-red-500 text-white text-sm p-2 rounded mb-3 text-center">
-            {error}
+          <p className="text-gray-600 mt-2 max-w-sm">
+            Aplikasi manajemen barang modern & mudah digunakan.
           </p>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="text-white text-sm font-medium">
-              Nama Lengkap
-            </label>
-            <input
-              type="text"
-              placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full px-4 py-2 bg-white/20 border border-white/30 text-white rounded-lg placeholder-white/70 focus:ring-2 focus:ring-blue-300 outline-none"
-              required
-            />
-          </div>
+          <img
+            src="/assets/images/RegisterUser.png"
+            alt="Register Illustration"
+            className="w-48 md:w-64 mt-6"
+          />
+        </div>
 
-          <div>
-            <label className="text-white text-sm font-medium">Email</label>
-            <input
-              type="email"
-              placeholder="email@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full px-4 py-2 bg-white/20 border border-white/30 text-white rounded-lg placeholder-white/70 focus:ring-2 focus:ring-blue-300 outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-white text-sm font-medium">Password</label>
-            <input
-              type="password"
-              placeholder="password kamu"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full px-4 py-2 bg-white/20 border border-white/30 text-white rounded-lg placeholder-white/70 focus:ring-2 focus:ring-blue-300 outline-none"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-2 rounded-lg text-white text-lg font-semibold shadow-lg transition flex items-center justify-center gap-2
-    ${
-      loading
-        ? 'bg-blue-400 cursor-not-allowed'
-        : 'bg-blue-600 hover:bg-blue-700'
-    }
-  `}
-          >
-            {loading ? (
-              <>
-                <span className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></span>
-                Processing...
-              </>
-            ) : (
-              'Register'
+        {/* RIGHT SIDE */}
+        <div className="md:w-1/2 p-8 flex justify-center items-center">
+          <div className="w-full max-w-sm">
+            <h2 className="text-center text-2xl md:text-3xl font-semibold mb-6">
+              Daftar
+            </h2>
+            {error && (
+              <div
+                className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
+                role="alert"
+                tabIndex="-1"
+                aria-labelledby="hs-soft-color-danger-label"
+              >
+                <span id="hs-soft-color-danger-label" className="font-bold">
+                  Error
+                </span>{' '}
+                {error}
+              </div>
             )}
-          </button>
-        </form>
+            <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+              <div>
+                <label className="block mb-1 font-medium">Name</label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  type="text"
+                  placeholder="Your Name"
+                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-teal-400 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 font-medium">Email</label>
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  type="email"
+                  placeholder="email@example.com"
+                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-teal-400 outline-none"
+                />
+              </div>
 
-        <p className="text-white text-center mt-5 text-sm">
-          Sudah punya akun?
-          <a
-            href="/login"
-            className="font-semibold text-blue-300 hover:text-blue-200 ml-1"
-          >
-            Login
-          </a>
-        </p>
+              <div>
+                <label className="block mb-1 font-medium">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-teal-400 outline-none"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full flex items-center justify-center gap-2 bg-[#21BAA7] text-white py-2 rounded-md transition
+    ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#1aa091]'}
+  `}
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin inline-block size-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    Loading...
+                  </>
+                ) : (
+                  'Login'
+                )}
+              </button>
+              <p className="text-sm text-center mt-3">
+                Sudah punya akun?
+                <a href="/login" className="text-[#21BAA7] font-semibold ml-1">
+                  Login
+                </a>
+              </p>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

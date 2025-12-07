@@ -1,1 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'preline';
+/* Preline UI */
+@source "./node_modules/preline/dist/*.js";

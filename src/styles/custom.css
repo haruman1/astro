@@ -1,0 +1,91 @@
+body {
+  margin: 0;
+  font-family: poppins, sans-serif;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 70px;
+}
+
+.left h1 {
+  margin-top: 40px;
+}
+
+.left h2 {
+  margin-top: 5px;
+}
+
+.left p {
+  margin-top: 0;
+}
+
+.left img {
+  width: 100%;
+  max-width: 430px;
+  margin-top: -500px;
+  margin-left: 15px;
+}
+
+.logo-kemenkes {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.logo-kemenkes img {
+  width: 200px;
+}
+
+.right {
+  background-color: #21baa7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 380px;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  width: 90%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #21baa7;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: #000000;
+  display: block;
+  text-align: center;
+  margin-top: 25px;
+}
+
+.text-green {
+  color: #21baa7;
+  font-weight: bold;
+}

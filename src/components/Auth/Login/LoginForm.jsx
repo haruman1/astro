@@ -1,81 +1,7 @@
-// import { useState } from 'react';
-// import { useToast } from '../../../lib/ToastProvider.jsx';
-// import { api } from '../../../lib/api.js';
-// export default function LoginForm() {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState('');
-//   const { addToast } = useToast();
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     setError('');
-
-//     try {
-//       // contoh API Elysia
-//       const data = await api.login({ email, password });
-//       if (!data.success) {
-//         throw new Error(data.message || 'Login gagal');
-//       }
-
-//       // jika sukses
-//       localStorage.setItem('access_token', data.token);
-//       addToast('Login sukses!', { type: 'success' });
-//     } catch (err) {
-//       setError(err.message);
-//       addToast(`Error: ${err.message}`, { type: 'error' });
-//     }
-
-//     setLoading(false);
-//   };
-
-//   return (
-//     <form
-//       onSubmit={handleLogin}
-//       className="w-full max-w-md bg-white shadow-lg p-6 rounded-xl"
-//     >
-//       <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-
-//       {error && (
-//         <p className="bg-red-100 text-red-700 p-2 mb-3 rounded">{error}</p>
-//       )}
-
-//       <div className="mb-4">
-//         <label className="block mb-1 font-medium">Email</label>
-//         <input
-//           type="email"
-//           className="w-full p-2 border rounded"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)}
-//           required
-//         />
-//       </div>
-
-//       <div className="mb-4">
-//         <label className="block mb-1 font-medium">Password</label>
-//         <input
-//           type="password"
-//           className="w-full p-2 border rounded"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//           required
-//         />
-//       </div>
-
-//       <button
-//         type="submit"
-//         disabled={loading}
-//         className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition"
-//       >
-//         {loading ? 'Loading...' : 'Login'}
-//       </button>
-//     </form>
-//   );
-// }
 import { useState } from 'react';
 import useAuth from '../../hooks/useAuth.js';
 import { useToast } from '../../../lib/ToastProvider.jsx';
+
 export default function LoginForm() {
   const { login } = useAuth();
   const [error, setError] = useState('');
@@ -101,38 +27,96 @@ export default function LoginForm() {
   };
 
   return (
-    <form
-      onSubmit={submit}
-      className="max-w-md mx-auto mt-12 bg-white p-6 rounded-xl shadow"
-    >
-      <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
-      {error && (
-        <p className="bg-red-100 text-red-700 p-2 mb-4 rounded text-center">
-          {error}
-        </p>
-      )}
-      <input
-        className="w-full border p-2 rounded mb-3"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+    <div className="min-h-screen w-full flex items-center justify-center px-4">
+      <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-lg w-full max-w-5xl">
+        {/* LEFT SIDE */}
+        <div className="md:w-1/2 bg-gray-50 p-8 flex flex-col items-center justify-center text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#21BAA7]">
+            Welcome To Manajemen Barang
+          </h1>
 
-      <input
-        className="w-full border p-2 rounded mb-3"
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+          <p className="text-gray-600 mt-2 max-w-sm">
+            Aplikasi manajemen barang modern & mudah digunakan.
+          </p>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition"
-      >
-        {loading ? 'Loading...' : 'Login'}
-      </button>
-    </form>
+          <img
+            src="/assets/images/illust.png"
+            alt="Login Illustration"
+            className="w-48 md:w-64 mt-6"
+          />
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="md:w-1/2 p-8 flex justify-center items-center">
+          <div className="w-full max-w-sm">
+            <h2 className="text-center text-2xl md:text-3xl font-semibold mb-6">
+              Login
+            </h2>
+            {error && (
+              <div
+                className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
+                role="alert"
+                tabIndex="-1"
+                aria-labelledby="hs-soft-color-danger-label"
+              >
+                <span id="hs-soft-color-danger-label" className="font-bold">
+                  Error
+                </span>{' '}
+                {error}
+              </div>
+            )}
+            <form className="flex flex-col space-y-4" onSubmit={submit}>
+              <div>
+                <label className="block mb-1 font-medium">Email</label>
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  type="email"
+                  placeholder="email@example.com"
+                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-teal-400 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-medium">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-teal-400 outline-none"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full flex items-center justify-center gap-2 bg-[#21BAA7] text-white py-2 rounded-md transition
+    ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#1aa091]'}
+  `}
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin inline-block size-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    Loading...
+                  </>
+                ) : (
+                  'Login'
+                )}
+              </button>
+              <p className="text-sm text-center mt-3">
+                Belum punya akun?
+                <a
+                  href="/register"
+                  className="text-[#21BAA7] font-semibold ml-1"
+                >
+                  Daftar
+                </a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

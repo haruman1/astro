@@ -38,10 +38,19 @@ export function AuthProvider({ children }) {
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
       setUser({ email });
+    } else {
+      throw new Error(res.data.message || 'Login failed');
     }
     return res.data;
   };
-
+  const register = async (name, email, password) => {
+    const res = await api.post('/auth/register', { name, email, password });
+    if (res.data.success) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message || 'Registration failed');
+    }
+  };
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
@@ -50,7 +59,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
