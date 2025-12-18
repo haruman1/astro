@@ -1,32 +1,50 @@
 import { useEffect, useState } from 'react';
+import api from '../lib/api'; // sesuaikan path
 
 export default function Protected({ children }) {
+  const [checking, setChecking] = useState(true);
   const [allowed, setAllowed] = useState(false);
-  console.log('Memeriksa akses terlindungi...');
+
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    let mounted = true;
 
-    // Jika tidak ada token → langsung ke login
-    if (!token) {
-      window.location.href = '/login';
-      return;
-    }
-    console.log('Token ditemukan, memeriksa akses...');
+    api
+      .get('/auth/check')
+      .then((res) => {
+        if (!mounted) return;
 
-    // Jika token ada → izinkan
-    setAllowed(true);
+        if (res.data?.success) {
+          setAllowed(true);
+        } else {
+          window.location.href = '/login';
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          window.location.href = '/login';
+        }
+      })
+      .finally(() => {
+        if (mounted) setChecking(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  // Saat masih checking auth
-  if (!allowed) {
+  if (checking) {
     return (
       <div className="flex h-screen items-center justify-center flex-col gap-4">
-        {/* Spinner sederhana */}
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
-        <p className="text-gray-600">Sedang check akun mu, Mohon menunggu</p>
+        <p className="text-gray-600">
+          Sedang memeriksa sesi akun kamu, mohon menunggu…
+        </p>
       </div>
     );
   }
+
+  if (!allowed) return (window.location.href = '/login');
 
   return children;
 }
