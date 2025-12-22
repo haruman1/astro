@@ -3,7 +3,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 import Navbar from "../layouts/Navbar.astro";
 const currentPath = Astro.url.pathname;
 const ssoApps = import.meta.env.PRIVATE_APP_URL;
-const redirect = encodeURIComponent(Astro.url.origin);
+const redirect = encodeURIComponent(import.meta.env.PUBLIC_APPS_URL + currentPath);
 ---
 <MainLayout title="Welcome | MyApp">
   <Navbar />
