@@ -6,20 +6,21 @@ export const StockContext = createContext(null);
 export function StockProvider({ children }) {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [stockById, setStockById] = useState(null);
   useEffect(() => {
     fetchStocks().finally(() => setLoading(false));
   }, []);
 
   const fetchStocks = async () => {
-    const res = await api.get('/stocks');
+    const res = await api.get('/stock/all');
+    console.log(res);
     if (res.data?.success) {
       setStocks(res.data.data);
     }
   };
 
   const getStockById = async (id) => {
-    const res = await api.get(`/stocks/${id}`);
+    const res = await api.get(`/stocks/detail/${id}`);
     if (!res.data?.success) {
       throw new Error('Stock not found');
     }

@@ -1,16 +1,36 @@
 ---
-
+import MainLayout from "../layouts/MainLayout.astro";
+import Navbar from "../layouts/Navbar.astro";
+const currentPath = Astro.url.pathname;
+const ssoApps = import.meta.env.PRIVATE_APP_URL;
+const redirect = encodeURIComponent(Astro.url.origin);
 ---
+<MainLayout title="Welcome | MyApp">
+  <Navbar />
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+  <main class="max-w-5xl mx-auto px-6 py-24 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold mb-6">
+      Bangun Aplikasi Lebih Cepat
+    </h1>
+
+    <p class="text-slate-600 text-lg mb-10">
+      Landing page sederhana menggunakan Astro + Tailwind CSS
+    </p>
+
+    <div class="flex justify-center gap-4">
+      <a
+       href={`${ssoApps}?redirect=${redirect}`}
+        class="px-6 py-3 rounded-xl bg-teal-600 text-white font-medium hover:bg-teal-700 transition"
+      >
+        Login Sekarang
+      </a>
+
+      <a
+        href="#"
+        class="px-6 py-3 rounded-xl border border-slate-300 hover:bg-slate-100 transition"
+      >
+        Pelajari Lebih Lanjut
+      </a>
+    </div>
+  </main>
+</MainLayout>
