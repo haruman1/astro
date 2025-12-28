@@ -1,4 +1,4 @@
-import { useAuth } from '../components/hooks/useAuth';
+import { useAuth } from '../components/hooks/useAuth.js';
 
 export default function PrivateRoute({ children }) {
   const { user, loading } = useAuth();

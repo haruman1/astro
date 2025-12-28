@@ -2,7 +2,7 @@ import { useStock } from '../hooks/useStock';
 
 export default function Content() {
   const { stocks, loading } = useStock();
-
+  console.log(cookie.refreshToken.get());
   return (
     <section className="p-6">
       {/* Summary Cards */}

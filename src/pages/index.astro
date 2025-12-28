@@ -19,10 +19,16 @@ const redirect = encodeURIComponent(import.meta.env.PUBLIC_APPS_URL + currentPat
 
     <div class="flex justify-center gap-4">
       <a
-       href={`${ssoApps}?redirect=${redirect}`}
+       href={`${ssoApps}/login?redirect=${redirect}`}
         class="px-6 py-3 rounded-xl bg-teal-600 text-white font-medium hover:bg-teal-700 transition"
       >
         Login Sekarang
+      </a>
+      <a
+       href={`${ssoApps}/logout?redirect=${redirect}`}
+        class="px-6 py-3 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition"
+      >
+        Logout Sekarang
       </a>
 
       <a
