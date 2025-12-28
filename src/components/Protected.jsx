@@ -2,33 +2,67 @@ import { useEffect, useState } from 'react';
 import api from '../lib/api';
 
 export default function Protected({ children }) {
+  const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true);
   const [allowed, setAllowed] = useState(false);
+  /**
+   * 🔁 Exchange refreshToken → accessToken
+   */
+  const exchangeToken = async () => {
+    try {
+      await api.post('/auth/exchange');
+      return true;
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        // NORMAL: user belum login
+        return false;
+      }
+      console.error('[Auth] Exchange failed:', err);
+      return false;
+    }
+  };
 
+  const checkAuth = async () => {
+    try {
+      const res = await api.get('/auth/check');
+      if (res.data?.success) {
+        setUser(res.data.user);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        // NORMAL: belum authenticated
+        return false;
+      }
+      console.error('[Auth] Check failed:', err);
+      return false;
+    }
+  };
   useEffect(() => {
     let mounted = true;
 
-    const checkAuth = async () => {
+    const initAuth = async () => {
       try {
-        const res = await api.get('/auth/check');
-
-        if (!mounted) return;
-
-        if (res.data?.success) {
+        const exchanged = await exchangeToken();
+        if (!exchanged) {
+          setAllowed(false);
+          return;
+        }
+        const authenticated = await checkAuth();
+        if (authenticated) {
           setAllowed(true);
         } else {
-          window.location.replace('/login');
+          setAllowed(false);
         }
       } catch {
-        if (mounted) {
-          window.location.replace('/login');
-        }
+        setAllowed(false);
       } finally {
         if (mounted) setChecking(false);
       }
     };
 
-    checkAuth();
+    initAuth();
 
     return () => {
       mounted = false;

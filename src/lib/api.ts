@@ -1,8 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
+
+interface RetryConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const api = axios.create({
   baseURL: import.meta.env.PUBLIC_API_BASE_URL,
-  withCredentials: true, // 🔥 WAJIB agar cookie terkirim
+  withCredentials: true, // 🔥 HttpOnly cookie ikut
 });
 
 /**
@@ -11,14 +15,15 @@ const api = axios.create({
  * ===============================
  */
 let isRefreshing = false;
+
 let failedQueue: {
-  resolve: (value?: any) => void;
-  reject: (error?: any) => void;
+  resolve: (value?: unknown) => void;
+  reject: (error?: unknown) => void;
 }[] = [];
 
-function processQueue(error: any) {
+function processQueue(error: unknown) {
   failedQueue.forEach((p) => {
-    error ? p.reject(error) : p.resolve();
+    error ? p.reject(error) : p.resolve(true);
   });
   failedQueue = [];
 }
@@ -27,13 +32,11 @@ function processQueue(error: any) {
  * ===============================
  * REQUEST INTERCEPTOR
  * ===============================
- * ❌ Tidak ambil token
- * ❌ Tidak set Authorization header
- * ✅ Cookie HttpOnly otomatis ikut
+ * ❌ Tidak inject Authorization
+ * ✅ Cookie otomatis dikirim
  */
 api.interceptors.request.use(
   (config) => {
-    console.log('[API] Request dengan HttpOnly Cookie');
     return config;
   },
   (error) => Promise.reject(error)
@@ -43,21 +46,21 @@ api.interceptors.request.use(
  * ===============================
  * RESPONSE INTERCEPTOR
  * ===============================
- * Auto refresh via cookie
+ * Auto refresh via HttpOnly cookie
  */
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryConfig;
 
-    // bukan error auth → lempar
-    if (error.response?.status !== 401 || originalRequest._retry) {
+    // ❌ bukan auth error
+    if (error.response?.status !== 401 || originalRequest?._retry) {
       return Promise.reject(error);
     }
 
     originalRequest._retry = true;
 
-    // kalau refresh sedang jalan → antri
+    // 🔁 jika refresh sedang jalan → antri
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
@@ -67,23 +70,23 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      console.log('[API] Refresh token via HttpOnly Cookie');
-
-      // 🔥 refresh token diambil backend dari cookie
+      // 🔥 refresh token diambil backend dari HttpOnly cookie
       await api.post('/auth/refresh');
 
       processQueue(null);
       return api(originalRequest);
-    } catch (err) {
-      console.error('[API] Refresh token gagal', err);
-      processQueue(err);
+    } catch (refreshError) {
+      processQueue(refreshError);
 
-      // redirect ke login (client only)
+      /**
+       * 🚫 JANGAN redirect ke /login
+       * Ini apps login sendiri
+       */
       if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+        window.location.href = '/';
       }
 
-      return Promise.reject(err);
+      return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;
     }
